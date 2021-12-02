@@ -1,0 +1,164 @@
+	 * MEMBUAT INVOICE PADA DASHBOARD ADMIN
+
+1. Buat table baru di database toko_online
+
+2. Buat dengan nama tb_invoice dengan jumlah 5 kolom
+
+3. Isi tb_invoice seperti ini
+	id int() primary key auto_increment,
+	nama varchar(56),
+	alamat varchar(225),
+	tgl_pesan datetime(),
+	batas_bayar());
+
+4. Ubah sedikit di controllers/dashboard pada function proses_pesanan seperti ini
+	 $is_processed = $this->model_invoice->index();
+        if($is_processed)
+
+5. Isi dari function proses_pesanan di cut ke dalam if($is_processed)
+
+6. Maka akan seperti ini
+	 public function proses_pesanan()
+    {
+        $is_processed = $this->model_invoice->index();
+        if($is_processed){
+            $this->cart->destroy();
+        $this->load->view('templates/header');
+        $this->load->view('templates/sidebar');
+        $this->load->view('proses_pesanan');
+        $this->load->view('templates/footer');
+        } else {
+            echo "Maaf, Pesanan Anda Gagal di Proses!";
+        }
+        
+    }
+
+7. Buat file baru dengan nama invoice.php di controllers/admin
+
+8. Isikan script pada invoice.php seperti ini
+	<?php
+
+	class Invoice extends CI_Controller{
+	
+	public function index()
+    	{
+        $data['invoice'] = $this->model_invoice->tampil_data();
+        $this->load->view('templates_admin/header');
+        $this->load->view('templates_admin/sidebar');
+        $this->load->view('admin/invoice', $data);
+        $this->load->view('templates_admin/footer');
+    	}
+     }
+
+9. Buat file baru dengan nama model_invoice.php di folder models
+
+10. Isikan script ke dalam model_invoice.php seperti ini
+
+    <?php
+
+    class Model_invoice extends CI_Model{
+
+    public function index()
+    {
+        date_default_timezone_set('Asia/Jakarta');
+        $nama  = $this->input->post('nama');
+        $alamat  = $this->input->post('alamat');
+
+        $invoice = array (
+            'nama'              => $nama,
+            'alamat'            => $alamat,
+            'tgl_pesan'         => date('Y-m-d H:i:s'),
+            'batas_pembayaran'  => date('Y-m-d H:i:s', mktime(date ('H'),
+            date('i'), date('s'), date('m'), date('d') + 1, date('Y'))),
+        );
+        $this->db->insert('tb_invoice', $invoice);
+        $id_invoice = $this->db->insert_id();
+
+        foreach ($this->cart->contents() as $item){
+            $data = array(
+                'id_invoice'        => $id_invoice,
+                'id_brg'            => $item['id'],
+                'nama_brg'          => $item['name'],
+                'jumlah'            => $item['qty'],
+                'harga'             => $item['price'],
+            );
+            $this->db->insert('tb_pesanan', $data);
+        }
+
+        return TRUE;
+    }
+
+  }
+
+11. Script tadi untuk membuat function index di models/model_invoice.php
+
+12. Selanjutnya buat function tampil data di models/model_invoice.php
+
+13. Isikan function tampil_data dengan script ini
+	public function tampil_data()
+    	{
+          $result = $this->db->get('tb_invoice');
+          if($result->num_rows() > 0){
+              return $result->result();
+          } else {
+              return false;
+          }
+    	}
+
+14. Lalu konfigurasi di folder config/autoload/model
+
+15. Di $autoload['model'] tambahkan 'model_invoice'
+
+16. Selanjutnya buat view invoice.php di folder views/admin
+
+17. Di file invoice.php isikan dengan script berikut
+	<div class="container-fluid">
+    <h5 align="center">Invoice Pemesanan Produk</h5><br>
+
+    <table class="table table-bordered table-hover table-striped">
+
+        <tr align="center">
+            <th>Id Invoice</th>
+            <th>Nama Pemesan</th>
+            <th>Alamat Pengiriman</th>
+            <th>Tanggal Pemesanan</th>
+            <th>Batas Pembayaran</th>
+            <th>Aksi</th>
+        </tr>
+
+        <?php foreach ($invoice as $inv) : ?>
+
+            <tr align="center">
+                <td><?php echo $inv->id ?></td>
+                <td><?php echo $inv->nama ?></td>
+                <td><?php echo $inv->alamat ?></td>
+                <td><?php echo $inv->tgl_pesan ?></td>
+                <td><?php echo $inv->batas_pembayaran ?></td>
+                <td><?php echo anchor('admin/invoice/detail/'.$inv->id,
+                 '<div class="btn btn-sm btn-primary">Detail</div>') ?>
+                </td>
+            </tr>
+
+        <?php endforeach ; ?>
+
+    	</table>
+	</div>
+
+18. Selanjutnya ke phpmyadmin lalu buat table baru dengan nama tb_pesanan
+
+19. Buat tb_pesanan dengan jumlah 7 kolom isi table tersebut dengan query ini
+	id int() primary key auto_increment,
+	id_invoice int(),
+	id_brg int(),
+	nama_brg varchar(50),
+	jumlah int(3),
+	harga int(10),
+	pilihan text());
+
+20. Selanjutnya coba melakukan pemesanan di toko_online apakah berhasil atau tidak
+
+21. Ke halaman admin lalu ke invoice cek apakah muncul invoice dari pemesanan yang di coba tadi
+
+22. Kalau not found cek di templates_admin/sidebar invoices diubah jadi invoice
+
+23. Kalau masih gabisa file invoice.php di taro di controllers/admin

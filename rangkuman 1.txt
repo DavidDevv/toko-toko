@@ -1,0 +1,45 @@
+EPS 1
+
+1. pindahkan folder pada sb admin 2 ke toko_online kedalam folder assets
+2. view page source pada index sb admin 2
+3. copy code
+4. buat dashboard.php di views
+5. lalu pase code
+6. buat dashboard.php di controllers
+
+7. 	<?php
+	 class Dashboard extends CI_Controller{
+   	  public function index()
+    	   {
+             $this->load->view('dashboard');
+    	   }
+	 }
+
+8. config - autoload.php - tambahkan 'url' di helper
+9. config - config.php - tambahkan url dari toko online di base url
+10. config - routes - welcome diganti jadi dashboard
+11. views - buat folder templates - dalam templates buat file header, footer, sidebar dengan ekstensi php
+12. isi header, footer, sidebar 
+13. tambahkan controller untuk footer, sidebar, header di controller/dashboard
+14. letakan <?= base_url() ?>assets/ di header.php dan footer.php
+15. ganti nama sb admin menjadi toko online, dan ganti icon menjadi toko tanpa rotasi
+16. hapus codingan nav item alerts dan nav items messages
+17. hapus codingan menu components sampai charts
+18. ubah interface menjadi kategori, dan tables menjadi elektronik
+19. tambahkan menu pakaian pria, wanita, anak, peralatan olahrag
+20. ubah masing-masing icon menu tsb dengan tv, tshirt, futbol
+21. hapus codingan pada views/dashboard
+22. buat database dengan nama toko_online, dan table tb_barang dengan 7 kolom
+
+23.
+	id int PRIMARY KEY auto increment
+	nama_brg varchar(120)
+	keterangan varchar(225)
+	kategori varchar(60)
+	harga int
+	stok int(4)
+	gambar text
+
+24. konfigurasi database dengan /config/database.php
+25. paling bawah isi username dengan root, database dengan nama database
+26. panggil database dengan cara /config/autoload.php dibagian libraries isi dengan 'database'

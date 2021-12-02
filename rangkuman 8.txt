@@ -1,0 +1,146 @@
+ * MEMBUAT FITUR HAPUS KERANJANG BELANJA DAN *
+ * MEMBUAT FITUR MELANJUTKAN PEMBAYARAN ATAU PROSES CHECK OUT *
+
+1. Ke folder views->keranjang.php dibawah penutup tag table buat seperti ini
+
+   # MEMBUAT 3 BUTTON YAITU
+     * HAPUS KERANJANG
+     * LANJUTKAN BELANJA
+     * PEMBAYARAN
+	
+	<div align="center">
+	     <a href="<?php echo base_url('dashboard/hapus_keranjang') ?>">
+	     <div class="btn btn-sm btn-danger">Hapus Keranjang</div></a>
+
+	     <a href="<?php echo base_url('dashboard/index') ?>">
+	     <div class="btn btn-sm btn-primary">Lanjutkan Belanja</div></a>
+
+	     <a href="<?php echo base_url('dashboard/pembayaran') ?>">
+	     <div class="btn btn-sm btn-success">Pembayaran</div></a>
+	</div>
+
+2. Buat function hapus keranjang di controller dashboard seperti ini
+
+   public function hapus_keranjang()
+    {
+        $this->cart->destroy();
+        redirect('dashboard/index');
+    }
+
+3. Buat function pembayaran di controller dashboard seperti ini
+
+   public function pembayaran()
+    {
+        $this->load->view('templates/header');
+        $this->load->view('templates/sidebar');
+        $this->load->view('pembayaran');
+        $this->load->view('templates/footer');
+    }
+
+4. Di folder views buat file baru dengan nama pembayaran.php 
+   * Buat <div> dengan class="container-fluid"
+   * Buat <div> dengan class="row"
+   * Buat 3 <div>
+     Dengan class="col-md-2"
+	    class="col-md-8"
+	    class="col-md-2"
+
+5. Buat seperti dibawah ini
+
+   <div class="container-fluid">
+    <div class="row">
+        
+    <div class="col-md-2">
+    </div>
+        
+    <div class="col-md-8">
+    <div class="btn btn-sm btn-danger">
+         
+	<?php 
+        $grand_total = 0;
+        if ($keranjang = $this->cart->contents())
+        {
+            foreach ($keranjang as $item)
+            {
+                 $grand_total = $grand_total + $item['subtotal'];
+            }
+
+         echo "<h4>Total Belanja Anda: Rp. ".number_format($grand_total,0,',','.');
+	?>
+
+5. Di bawah tag php buat 2 tag br seperti ini
+   	</div><br><br>
+
+6. Di bawah nya buat 
+   * tag <h3> dengan nama "Input Alamat Pengiriman dan Pembayaran"
+   * <form> dengan method="post" action="<?php echo base_url() ?> dashboard/proses_pesanan"
+   seperti ini
+	<h3>Input Alamat Pengiriman dan Pembayaran</h3>
+     
+7. Di bawah <h3> isikan seperti ini 
+   <form method="post" action="<?php echo base_url('dashboard/proses_pesanan') ?>">
+	<div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" name="nama" placeholder="Nama Lengkap Anda" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label>Alamat Lengkap</label>
+          <input type="text" name="alamat" placeholder="Alamat Lengkap Anda" class="form-control">
+        </div>        
+
+        <div class="form-group">
+          <label>Nomor Telfon</label>
+          <input type="text" name="no_telp" placeholder="Nomor Telfon Anda" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label>Jasa Pengiriman</label>
+          <select class="form-control">
+            <option>JNE</option>
+            <option>SICEPAT</option>
+            <option>ANTER AJA</option>
+            <option>J&T</option>
+            <option>GOJEK</option>
+            <option>GRAB</option>
+          </select>
+        </div>
+
+	<div class="form-group">
+          <label>Pilih Metode Pembayaran</label>
+          <select class="form-control">
+            <option>BCA - XXXXXXX</option>
+            <option>BRI - XXXXXXX</option>
+            <option>BNI - XXXXXXX</option>
+            <option>MANDIRI - XXXXXXX</option>
+            <option>ALFAMART - XXXXXXX</option>
+            <option>INDOMART - XXXXXXX</option>           
+          </select>
+         </div>
+
+         <button type="submit" class="btn btn-sm btn-success mb-3">Pesan Sekarang</button>
+  </form> 
+
+8. Di controller dashboard buat function baru dengan nama proses_pesanan() seperti ini
+    public function proses_pesanan()
+    {
+        
+        $this->cart->destroy();
+        $this->load->view('templates/header');
+        $this->load->view('templates/sidebar');
+        $this->load->view('proses_pesanan');
+        $this->load->view('templates/footer');
+    }  
+
+9. Perbaiki ketika pesanan masih 0 maka muncul pesan
+
+10. Di file pembayaran.php dibawah tag </form> buka tag php <?php ?>
+
+11. penutup kurung kurawal } yang ada di atas </div><br><br> pindahkan kedalam tag php yang tadi dibuka seperti ini
+    <?php
+    }else
+      {
+    	echo "<h5>Anda Belum Memiliki Pesanan!";     
+      }
+    ?>
+	     

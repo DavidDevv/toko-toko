@@ -1,0 +1,109 @@
+* MEMBUAT DETAIL INVOICE
+
+1. Klik tombol detail untuk nge-link
+
+2. Buka folder views/admin/invoice.php
+
+3. Di bagian button nya buat script <?php echo anchor seperti ini
+	<td>
+	<?php echo anchor('admin/invoice/detail/'.$inv->id,
+                 '<div class="btn btn-sm btn-primary">Detail</div>') ?>
+        </td>
+
+4. Selanjutnya buka controllers/admin/invoice.php
+
+5. Buat function detail di dalam invoice.php
+	public function detail($id_invoice)	*jangan lupa isi $id_invoice*
+    {
+        $data['invoice'] = $this->model_invoice->ambil_id_invoice($id_invoice);
+        $data['pesanan'] = $this->model_invoice->ambil_id_pesanan($id_invoice);
+        $this->load->view('templates_admin/header');
+        $this->load->view('templates_admin/sidebar');
+        $this->load->view('admin/detail_invoice', $data);
+        $this->load->view('templates_admin/footer');
+    }
+
+6. Selanjutnya buka controllers/models/model_invoice.php
+
+7. Buat function ambil_id_invoice($id_invoice)	*jangan lupa isi $id_invoice*
+		 ambil_id_pesanan($id_invoice)	*jangan lupa isi $id_invoice*
+
+8. Di function ambil_id_invoice() isikan script seperti ini
+	 public function ambil_id_invoice($id_invoice) *jangan lupa isi $id_invoice*
+    {
+        $result = $this->db->where('id', $id_invoice)->limit(1)->get('tb_invoice');
+        if($result->num_rows() > 0){
+            return $result->result();
+        } else {
+            return false;
+        }
+    }
+
+9.Di function ambil_id_pesanan() isikan script seperti ini
+	* Di 'id' tambah menjadi 'id_invoice' ,nama table tb_invoice ganti jadi tb_pesanan, row diganti jadi result*
+
+	 public function ambil_id_invoice($id_invoice)	*jangan lupa isi $id_invoice
+    {
+        $result = $this->db->where('id_invoice', $id_invoice)->get('tb_pesanan');
+        if($result->num_rows() > 0){
+            return $result->row();
+        } else {
+            return false;
+        }
+    }
+
+10. Selanjutnya membuat view detail_invoice di folder views/admin
+	*Di <h4> kasih Detail Pesanan*
+	*Setelah Detail Pesanan kasih div class nya btn-sm-success*
+	*Setelah class btn kasih No. Invoice: <?php echo $invoice->id ?>*
+
+11. Maka akan jadi seperti ini
+	<div class="container-fluid">
+    	<h5 align="center">Detail Pesanan<br><div class="btn btn-sm btn-danger mt-2 mb-2">No.Invoice: 
+        <?php echo $invoice->id ?></div></h5>
+
+12. Dibawah nya buat table dengan class seperti ini
+	<table class="table table-bordered table-hover table-striped">
+
+13. Di dalam table dikasih <tr> dan <td> maka akan seperti ini
+	<tr align="center">
+            <td>ID BARANG</td>
+            <td>NAMA PRODUK</td>
+            <td>JUMLAH PESANAN</td>
+            <td>HARGA SATUAN</td>
+            <td>SUBTOTAL</td>
+        </tr>
+
+14. Di bawah tag tr dan td buat $no=1; lalu buat foreach ($pesanan as $psn) : lalu tutup foreach nya
+
+15. Di dalam foreach di isi dengan <tr> dan <td> maka aka seperti ini
+	 <?php
+        $total = 0;
+        foreach ($pesanan as $psn) :
+            $subtotal = $psn->jumlah * $psn->harga;
+            $total   += $subtotal;
+        ?>
+
+            <tr align="center">
+                <td><?php echo $psn->id_brg ?></td>
+                <td><?php echo $psn->nama_brg ?></td>
+                <td><?php echo $psn->jumlah ?></td>
+                <td>Rp. <?php echo number_format($psn->harga,0,',','.') ?></td>
+                <td>Rp. <?php echo number_format($subtotal,0,',','.') ?></td>
+            </tr>
+        
+        <?php endforeach ;  ?>
+
+16. Di bawah foreach kasih <tr> dan <td> maka akan seperti ini
+	 <tr align="center">
+            <td colspan="4">Total Harga</td>
+            <td>Rp. <?php echo number_format($subtotal,0,',','.') ?></td>
+        </tr>
+
+17. Dibawah nya </table> buat button untuk kembali
+
+18. Masukan script seperti ini
+	<a href="<?php echo base_url('admin/invoice/index') ?>">
+	<div class="btn btn-sm btn-primary" >Kembali</div></a>
+	
+	

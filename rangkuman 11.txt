@@ -1,0 +1,125 @@
+* MEMBUAT DETAIL PRODUK
+
+1. Buka views/dashboard.php
+
+2. Button detail hapus lalu copy dari button tambah ke keranjang
+
+3. Isikan dengan script seperti ini
+	<?php echo anchor('dashboard/detail/'.$brg->id_brg,
+              '<div class="btn btn-sm btn-danger mb-1 mt-0"> 
+              Detail</div>') ?>
+
+4. Buka controllers/dashboard.php
+
+5. Di paling bawah buat function detail($id_brg)	*Di dalam function detail tambahin $id_brg*
+	
+6. Isikan dengan script berikut
+	 public function detail($id_brg)
+    {
+        $data['barang'] = $this->model_barang->detail_brg($id_brg);
+        $this->load->view('templates/header');
+        $this->load->view('templates/sidebar');
+        $this->load->view('detail_barang',$data);
+        $this->load->view('templates/footer');
+    }
+
+7. Selanjutnya buat function detail_brg di model_barang
+
+8. Di dalam function detail_brg($id_brg)	*Di dalam function detail tambahin $id_brg*
+	public function detail_brg($id_brg)
+    {
+        $result = $this->db->where('id_brg',$id_brg)->get('tb_barang');
+        if($result->num_rows() > 0){
+            return $result->result();
+        } else {
+            return false;
+        }
+    }
+
+9. Selanjutnya buat view detail_barang di folder views/admin
+
+10. Buat <div> dengan class container-fluid
+
+11. Di dalam tag <div> tersebut di isi dengan bootstrap/cards/
+
+12. Copy bootstrap yang featured special title treatment
+
+13. Maka akan seperti ini
+      <div class="container-fluid">
+	<div class="card">
+  	<div class="card-header">
+    	  Featured
+  	</div>
+  	<div class="card-body">
+    	<h5 class="card-title">Special title treatment</h5>
+    	<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    	<a href="#" class="btn btn-primary">Go somewhere</a>
+  	</div>
+	</div>
+      </div>
+
+14. Kita ubah pada bagian
+	*Featured menjadi Detail Produk
+
+15. Di bawah card-body kita kasih <div> dengan class row
+
+16. Di bawah <div> class row kasih <div> dengan class col-md-4 dan
+				   <div> dengan class col-md-8
+
+17. Di atas <div> class row dikasih foreach ($barang as $brg) :
+
+18. Tutup foreach nya dibawah <div> class col-md-8
+
+19. Di dalam <div> class col-md-4 kasih gambar dan class="card-img-top" dengan script seperti ini
+	<img src="<?php echo base_url().'/uploads/'.$brg->gambar ?>" class="card-img-top">
+
+20. Di dalam <div> class col-md-8 kasih <table> dengan class table
+
+21. Di dalam <table> kasih <tr> dan <td>
+
+22. Masukan script seperti ini
+	<tr>
+            <td>Nama Produk</td>
+            <td><strong><?php echo $brg->nama_brg ?></strong></td>
+        </tr>
+
+        <tr>
+            <td>Keterangan</td>
+            <td><strong><?php echo $brg->keterangan ?></strong></td>
+        </tr>
+                        
+        <tr>
+            <td>Kategori</td>
+            <td><strong><?php echo $brg->kategori ?></strong></td>
+        </tr>
+
+        <tr>
+            <td>Stok</td>
+            <td><strong><?php echo $brg->stok ?></strong></td>
+        </tr>
+
+        <tr>
+            <td>Harga</td>
+            <td><strong><div class="btn btn-sm btn-success">
+                 Rp. <?php echo number_format(($brg->harga), 0, ',', '.') ?></div>
+                 </strong></td>
+             </tr>
+           
+23. Lalu tambah button untuk tambah keranjang belanja dan kembali
+
+24. Biar cepet kita copy dari button yang ada di filedashboard.php di views
+
+25. Copy dan paste di bagian bawah seperti ini
+	 <?php echo anchor('dashboard/tambah_ke_keranjang/'.$brg
+                    ->id_brg, '<div class="btn btn-sm 
+                    btn-primary ">Tambah Keranjang</div>') 
+	 ?>
+
+         <?php echo anchor('dashboard/index/',		*Untuk button kembali ga pake .$brg->id_brg*	
+               '<div class="btn btn-sm btn-danger ml-1">
+		Kembali</div>')
+	 ?> 
+
+26. Di data barang ada detail dan coba latihan untuk buat detail sendiri    					
+                     
+	 

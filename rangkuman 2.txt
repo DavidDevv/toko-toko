@@ -1,0 +1,46 @@
+1. isi data di tb_barang
+2. tambahkan $data['barang'] = $this->model_barang->tampil_data()->result();
+   dan $data di samping dashboard pada controllers/dashboard.php
+3. bikin file baru di /models dengan nama model_barang.php
+4. isi dengan 
+
+<?php
+class Model_barang extends CI_Model
+{
+    public function tampil_data()
+    {
+        return $this->db->get('tb_barang');
+    }
+}
+
+5. tambahkan model_barang di /config/autoload dibagian model
+6. tambahkan pada views/dashboard.php
+
+<div class="container-fluid">
+    <div class="row">
+        <?php foreach ($barang as $brg) : ?>
+
+        <?php endforeach; ?>
+    </div>
+</div>
+
+7. cari code "cards" pada bootstrap 4, lalu ubah ukuran menjadi 16 dari 18
+
+<div class="card" style="width: 18rem;">
+  <img src="..." class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">Card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div>
+
+8. pada card title ubah menjadi <?= $brg->nama_brg; ?> berikan mb-1 dan dibawahnya tambahkan <small><?= $brg->keterangan; ?></small>
+9. berikan badges bootstrap <span class="badge badge-pill badge-success">Rp. <?= $brg->harga; ?></span> berikan mb-3 dan gantikan <p>
+10. ubah ukuran button menjadi small dengan btn-sm dengan keterangan "Tambah ke keranjang"
+11. berikan button lagi pada bawahnya dengan class success dengan keterangan "Detail"
+12. pada div row berikan class text-center dan juga mt-4
+13. tambahkan folder uploads pada toko_online
+14. pada img src berikan <?= base_url() . '/uploads/' . $brg->gambar ?>
+15. tambahkan carousel dari bootstrap
+16. berikan <?= base_url('assets/img/slider1.jpg')  ?> pada img src di dalam carousel

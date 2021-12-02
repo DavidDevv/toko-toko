@@ -1,0 +1,51 @@
+* MEMBUAT FITUR DETAIL KERANJANG BELANJA *
+
+1. Buka folder views/templates/sidebar
+
+2. Tambah link di $keranjang seperti ini
+   <?php echo anchor('dashboard/detail_keranjang', $keranjang) ?>
+
+3. Selanjutnya buat method detail_keranjang di controllers/dashboard seperti dibawah ini
+   public function detail_keranjang()
+   {
+	$this->load->view('templates/header');
+        $this->load->view('templates/sidebar');
+        $this->load->view('keranjang');
+        $this->load->view('templates/footer');
+   }
+	$THIS NYA COPY DARI CONTROLLER DASHBOARD BIAR CEPET UBAH JADI KERANJANG
+
+4. Selanjutnya buat view keranjang.php di folder views seperti dibawah ini
+   <div class="container-fluid">
+	<h4>Keranjang Belanja</h4>
+	<table class="table table-bordered table-striped table-hover">
+	  
+	<tr>
+	   <th>No</th>
+	   <th>Nama Produk</th>
+	   <th>Jumlah</th>
+	   <th>Harga</th>
+	   <th>Sub-Total</th>
+	</tr>
+
+5. Kemudian buat foreach seperti dibawah ini
+	<?php
+	$no=1;
+	foreach ($this->cart->contents() as $items) : ?>
+
+	<tr>
+	  <td><?php echo $no++ ?></td>
+	  <td><?php echo $items['name'] ?></td>
+	  <td><?php echo $items['qty'] ?></td>
+	  <td align="right">Rp. <?php echo number_format($items['price'], 0,',','.')?></td>
+	  <td align="right">Rp. <?php echo number_format($items['subtotal'], 0,',','.')?></td>
+	</tr>
+        
+         <?php endforeach; ?>
+ 
+6. Di bawah endforeach buat seperti dibawah ini
+
+	<tr>
+	  <td colspan="4"></td>
+	  <td align="right">Rp. <?php echo number_format($this->cart->total(), 0,',','.')?></td>
+	</tr>

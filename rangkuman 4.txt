@@ -1,0 +1,145 @@
+	1. buka views/templates_admin/sidebar.php
+2. pada href dashboard isikan dengan <php?= base_url('admin/dashboard_admin') ?>
+3. pada href data barang isikan dengan <php?= base_url('admin/data_barang') ?>
+4. pada href invoice isikan dengan <php?= base_url('admin/invoices') ?>
+5. buat file data_barang.php pada controllers/admin
+6. lalu isikan
+
+<?php
+class Data_barang extnds CI_Controller{
+	public function index()
+	{
+	$this->load->view('templates_admin/header');
+        $this->load->view('templates_admin/sidebar');
+        $this->load->view('admin/data_barang');
+        $this->load->view('templates_admin/footer');
+	}
+}
+
+7. buat file data_barang.php pada views/admin
+8. isi dengan
+
+<div class="container-fluid">
+    <button class="btn btn-sm btn-primary mb-3"> <i class="fas fa-plus fa-sm"></i> Tambah Barang</button>
+</div>
+
+9. lalu buat table
+
+<table class="table table-bordered">
+        <tr>
+            <th>NO</th>
+            <th>NAMA BARANG</th>
+            <th>KETERANGA</th>
+            <th>KATEGORI</th>
+            <th>HARGA</th>
+            <th>STOK</th>
+            <th colspan="3">AKSI</th>
+        </tr>
+</table>
+
+10. di bawahnya tambahkan perulangan
+
+<?php $no=1; foreach ($barang as $brg) : ?>	
+
+<?php endforeach; ?>
+
+11. didalam perulangan isi
+
+	<?php $no = 1;
+        foreach ($barang as $brg) : ?>
+            <tr>
+                <td><?= $no++ ?></td>
+                <td><?= $brg->nama_brg ?></td>
+                <td><?= $brg->keterangan ?></td>
+                <td><?= $brg->kategori ?></td>
+                <td><?= $brg->harga ?></td>
+                <td><?= $brg->stok ?></td>
+                <td>
+                    <div class="btn btn-sm btn-success"><i class="fas fa-search-plus"></i></div>
+                </td>
+                <td>
+                    <div class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></div>
+                </td>
+                <td>
+                    <div class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+
+12. pada controllers/admin/data_barang.php tambahkan 
+
+$data['barang'] = $this->model_barang->tampil_data()->result();
+
+13. dan disamping data_barang tambahkan $data
+14. buka dokumentasi bootstrap
+15. cari modal, dan gunakan live modal copy bagian modal
+16. paste pada bagian bawah views/admin/data_barang.php
+17. tambahkan data-toggle="modal" data-target="#tambah_barang" pada button
+18. berikan tambah_barang pada id modal
+19. pada modal body isi dengan
+
+		<form action="<?= base_url() . 'admin/data_barang/tambah_aksi'; ?>" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Nama Barang</label>
+                        <input type="text" name="nama_brg" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Keterangan</label>
+                        <input type="text" name="keterangan" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <input type="text" name="kategori" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Harga</label>
+                        <input type="text" name="harga" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Stok</label>
+                        <input type="text" name="stok" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Gambar</label><br>
+                        <input type="file" name="gambar" class="form-control">
+                    </div>
+                </form>
+
+20. pada controller/admin/data_barang.php tambahkan
+
+	public function tambah_aksi()
+    	{
+        $nama_brg = $this->input->post('nama_brg');
+        $keterangan = $this->input->post('nama_brg');
+        $kategori = $this->input->post('nama_brg');
+        $harga = $this->input->post('nama_brg');
+        $stok = $this->input->post('nama_brg');
+        $gambar = $_FILES['gambar']['name'];
+        if ($gambar = '') {
+        } else {
+            $config['upload_path'] = './uploads';
+            $config['allowed_types'] = 'jpeg|jpg|png|gif';
+            $this->load->library('upload', $config);
+            if (!$this->upload->do_upload('gambar')) {
+                echo "Gambar gagal di upload!";
+            } else {
+                $gambar = $this->upload->data('file_name');
+            }
+        }
+
+        $data = array(
+          
+        );
+        $this->model_barang->tambah_barang($data, 'tb_barang');
+        redirect('admin/data_barang/index');
+
+21. pada models/model_barang.php tambahkan
+
+	public function tambah_barang($data, $table)
+    	{
+        $this->db->insert($table , $data);
+    	}
+
+22. pada views/admin/data_barang ubah type button save changes menjadi submit dan ubah menjadi kalimat simpan
+23. ubah warna button close menjadi danger
+24. pindahkan tag penutup form ke bawah div button

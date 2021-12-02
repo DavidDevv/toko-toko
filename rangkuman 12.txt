@@ -1,0 +1,93 @@
+*MEMBUAT KATEGORI PRODUK DI SIDEBAR NYA*
+
+1. Di controllers buat file baru dengan nama kategori.php
+	<?php
+
+class Kategori extends CI_Controller
+	{
+	}
+
+2. Buat function sesuai kategori yang ada di sidebar
+	*Buat function dari elektronik sampai peralatan olahraga*
+
+3. Buat function elektronik di controller kategori.php
+
+4. Masukan script seperti ini
+	public function elektronik()
+    {
+        $data['elektronik'] = $this->model_kategori->data_elektronik()->result();
+        $this->load->view('templates/header');
+        $this->load->view('templates/sidebar');
+        $this->load->view('elektronik',$data);
+        $this->load->view('templates/footer');
+    }
+
+5. Di folder model buat file baru dengan nama model_kategori.php
+	<?php
+
+	class Model_kategori extends CI_Model
+	{
+	}
+
+6. Buat function data_elektronik di model_kategori.php
+	
+7. Masukkan script seperti ini
+	  public function data_elektronik()
+    {
+        return $this->db->get_where("tb_barang",array('kategori' => 'elektronik'));
+    }
+
+8. Selanjutnya kita konfigurasi dulu di folder config/autoload/$autoload['model']
+
+9. di $autoload['model'] tambahin model_kategori
+
+10. Buat view elektronik.php di folder views
+
+11. Biar cepet copy dari file dashboard.php lalu paste di elektronik.php
+
+12. Di elektronik.php di bagian foreach ($barang as $brg) ubah menjadi ($elektronik as $brg)
+
+13. cek di url browser arahkan toko_online/kategori/elektronik kalo bisa yaudah bagus
+
+14. Di controller tinggal copy paste untuk semua kategori yang ada di sidebar
+	*Perhatikan nama di controller harus sesuai dengan nama kategori di sidebar*
+	*Copy paste dari pakaian pria sampai peralatan olahraga*
+
+15. Di model_kategori.php juga sama tinggal copy paste saja
+	*Perhatikan nama di controller harus sesuai dengan nama kategori di sidebar*
+	*Copy paste dari pakaian pria sampai peralatan olahraga*
+
+16. Di folder views buat file baru dengan nama pakaian_pria.php sampai peralatan_olahraga.php
+	
+17. Di pakaian_pria.php di bagian foreach ($barang as $brg) ubah menjadi ($pakaian_pria as $brg)
+  
+18. Di model_kategori.php pada bagian kategori nya ga pake underscore_
+
+19. Lakukan hal yang sama sampai peralatan_olahraga.php
+
+20. Buat link untuk kategori yang ada di sidebar agar kalo di klik bisa muncul
+
+21. Buka folder views/templates/sidebar.php
+
+22. Untuk bagian Dashboard href nya isi seperti ini
+	href="<?php echo base_url('dashboard') ?>"
+
+23. Untuk kategori dari elektronik sampai peralatan olahraga isi seperti ini
+	*DI ISI SESUAI NAMA KATEGORI MASING MASING*
+	<?php echo base_url('kategori/elektronik') ?>	
+
+24. Di folder views/admin/data_barang.php pada bagian kategori tambahin <select> dan <option>
+	*<input> di hapus lalu diganti dengan <select> dan <option>*
+	*<select> di isi sesuai nama kategori*
+	*<select> di kasih class="form-control" name="kategori"*
+
+25. Maka akan seperti ini
+	<select class="form-control" name="kategori">
+             <option>Elektronik</option>
+             <option>Pakaian Pria</option>
+             <option>Pakaian Wanita</option>
+             <option>Pakaian Anak</option>
+             <option>Peralatan Olahraga</option>
+        </select>
+
+26. Input semua data barang yang dikasih di flashdisk

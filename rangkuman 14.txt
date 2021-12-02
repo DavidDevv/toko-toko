@@ -1,0 +1,246 @@
+*MEMBUAT LOGIN*
+
+1. Membuat tabel user pada database toko_online
+
+2. Buat table baru dengan nama tb_user dengan jumlah kolom 5
+
+3. Masukan query pada tb_user seperti ini
+
+	id int() primary key auto_increment,
+	nama varchar(50),
+	username varchar(50),
+	password varchar(50),
+	role_id tinyint(1));
+
+4. Role_id untuk admin dan user
+	*UNTUK ADMIN ROLE_ID = 1
+	*UNTUK USER ROLE_ID = 2
+
+5. Kita isi tb_user seperti ini
+	id(),
+	nama(admin)
+	username(admin)
+	password(123)
+	role_id(1)
+
+6. Selanjutnya buat button login di pojok kanan atas dan hilangkan nama dan foto user
+
+7. Buka folder views/templates/sidebar.php
+
+8. Hilangkan foto user yang ada di sidebar.php
+
+9. Letaknya dibawah <div> class topbar-divider
+
+10. Blok dari NAV ITEM USER INFORMATION
+
+11. Sampai </li> lalu hapus
+
+12. Di bawah <div> class topbar-divider kita isi dengan script berikut
+	<ul class="nav navbar-nav navbar-right">
+                
+              <?php if($this->session->userdata('username')) { ?>
+              <li><div>
+		Selamat Datang <?php echo $this->session->userdata('username') ?>
+	      </div></li>
+
+13. Lalu dibawah nya kasih <?php echo anchor untuk nge-link
+	<li class="ml-4"><?php echo anchor('auth/logout'),'Logout'; ?></li>
+
+	*JIKA BUTTON LOGOUT ERROR 'Logout' TARO DI DALEM KURUNG ANCHOR*
+
+14. Kalau user sudah berhasil login maka di pojok kanan atas muncul button logout
+
+15. Else dibuatdengan maksud jika user belum login maka muncul login dan link untuk login
+
+16. Di else buat script berikut
+	<?php } else { ?>
+                <li><?php echo anchor('auth/login','Login'); ?></li>
+
+              <?php } ?>
+
+17. Mudahnya akan seperti ini
+	<ul class="nav navbar-nav navbar-right">
+                
+              <?php if($this->session->userdata('username')) { ?>
+                <li><div>Selamat Datang <?php echo $this->session->userdata('username') ?></div></li>
+                <li class="ml-4"><?php echo anchor('auth/logout','Logout'); ?></li>
+                <?php } else { ?>
+                <li><?php echo anchor('auth/login','Login'); ?></li>
+
+              <?php } ?>
+            </ul>
+
+18. Blok dari <div> class topbar-divider sampai </ul> dibawah penutup php
+
+19. Pindahkan yang di blok ke bawah </ul>
+
+20. Selanjutnya buat file auth.php di controllers
+
+21. Buat function login pada auth.php
+	public function login()
+    {
+        
+        $this->form_validation->set_rules('username','Username','required', [
+            'required'  => 'Username Wajib Diisi !']);
+        $this->form_validation->set_rules('password','Password','required', [
+            'required'  => 'Password Wajib Diisi !']);
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->load->view('templates/header');
+            $this->load->view('form_login');
+            $this->load->view('templates/footer');
+        } else{
+            $auth = $this->model_auth->cek_login();
+
+            if($auth == FALSE)
+            {
+                $this->session->set_flashdata('pesan',
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Username atau Password Anda Salah
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>');
+
+              redirect('auth/login');
+            } else {
+                $this->session->set_userdata('username',$auth->username);
+                $this->session->set_userdata('role_id',$auth->role_id);
+
+                switch($auth->role_id){
+                    case 1 : redirect('admin/dashboard_admin'); *DI REDIRECT UNTUK ADMIN*
+                             break;
+                    case 2 : redirect('welcome');	*DI REDIRECT UNTUK USER*
+                            break;
+                    default: break;
+                }
+            }
+        }
+    }
+
+    public function logout()
+    {
+        $this->session->sess_destroy();
+        redirect('auth/login');
+    }
+
+	*PADA SET_FLASHDATA('PESAN',) DI ISI DENGAN ALERTS PADA BOOTSTRAP CARI YANGADA CLOSE NYA*
+
+22. Lalu masukkan di dalam tanda petik setelah 'pesan' maka akan jadi seperti ini
+	 ,
+                '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Username atau Password Anda Salah
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>');
+	*PESAN NYA DI GANTI DENGAN  Username atau Password Anda Salah *
+
+23. Selanjutnya membuat model_auth.php di folder models dengan function cek_login
+
+24. Isikan dengan script berikut
+	<?php
+
+class Model_auth extends CI_Model{
+
+    public function cek_login()
+    {
+        $username   = set_value('username');
+        $password   = set_value('password');
+
+        $result     = $this->db->where('username',$username)
+                               ->where('password',$password)
+                               ->limit(1)
+                               ->get('tb_user');
+        if($result->num_rows() > 0){
+            return $result->row();
+        } else {
+            return array();
+        }
+    }
+    }
+
+25. Selanjutnya konfigurasi pada config/autoload
+
+26. Di $autoload['model'] tambahin "model_auth"
+
+27. Di $autoload['model'] tambahin "form_validation"
+
+28. Selanjutnya membuat view form_login.php di folder views
+
+29. Paste script dari file login di folder sb admin 2
+
+30. Script javascript nya di hapus karena sudah di load untuk header dan footer nya
+
+31. Script head nya juga di hapus mulai dari <head> sampai </head>
+
+32. Arahkan url toko_online/auth/login
+
+33. Modifikasi sedikit pada tampilan login 
+
+34. * HILANGKAN GAMBAR ANJING NYA
+    * HILANGKAN LOGIN WITH GOOGLE
+    * HILANGKAN LOGIN WITH FACEBOOK
+
+35. Di views/form_login.php hapus <div> yang class nya ada login-image
+
+36. * Di <div>class col-xl-5
+    * Di <div>class col-lg-12 
+
+37. Untuk hapus login with google dan facebook
+	* BLOK <hr> SAMPAI </a>
+	*LALU HAPUS YANG DI BLOK TADI
+
+38. Hapus remember me dan forgot password
+
+39. Hapus semua form-group
+
+40. Judul ubah menjadi form login
+
+41. Create an account ubah menjadi Belum punya akun? daftar!
+
+42. Di control form buat method dan action
+	<form method="post" action="<?php echo base_url('auth/login') ?>" class="user">
+
+43. Di <input> yang ada di <div> form-group
+	*type="text"
+	*setelah placeholder kasih name="username"
+	*BEGITU JUGA UNTUK PASSWORD ISI SEPERTI USERNAME
+
+44. Di bawah form login tambahin
+	<?php echo $this->session->flashdata('pesan') ?>
+
+45. Untuk button login kita perbaiki dulu menjadi
+	 <button type="submit" class="btn btn-primary form-control">Login</button>
+
+46. Di bagian username dan password tambahin form_validation untuk error
+	 *USERNAME*<?php echo form_error('username', '<div class="text-danger small ml-3 mt-1">','</div>') ; ?>
+	 *PASSWORD*<?php echo form_error('password', '<div class="text-danger small ml-3 mt-1">','</div>') ; ?>
+
+47. Di auth.php di controllers form_validation tambahin jadi gini
+	 $this->form_validation->set_rules('username','Username','required', [
+            'required'  => 'Username Wajib Diisi !']);
+         $this->form_validation->set_rules('password','Password','required', [
+            'required'  => 'Password Wajib Diisi !']);
+	
+48. tambah data di tb_user
+	id()
+	nama(user)
+	username(user)
+	password(123)
+
+49. Placeholder di file form_login kita ubah placeholder nya pake bahasa indo
+
+50.Jika ada kesalahan pada button di dashboard/toko_online 
+
+51. Buka views/templates/sidebar.php lalu tamabhin ini
+	 <li class="ml-4"><?php echo anchor('auth/logout','Logout'); ?></li>	
+
+52. Buat logout dan login untuk halaman admin
+
+53. Copy dari templates/sidebar.php blok untuk yang username dan password
+
+54. Ke views/templates_admin/sidebar.php hapus mulai dari nav item user information sampai  </li>
+
+55. Lalu paste dibawahnya

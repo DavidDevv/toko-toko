@@ -1,0 +1,58 @@
+1. pada views/dashboard, ubah button tambah ke keranjang menjadi
+
+<?= anchor('dashboard/tambah_ke_keranjang/' . $brg->id_brg, '<div class="btn btn-sm btn-primary">Tambah ke keranjang</div>') ?>
+
+2. lalu buat function untuk menambah ke keranjang di controllers/dashboard
+
+	public function tambah_ke_keranjang()
+    	{
+        $barang = $this->model_barang->find($id);
+    	}
+
+3. buka dokumentasi codeigniter, cari cart, shopping cart class, copy pada Adding an item to the cart
+4. paste di function tambah_ke_keranjang
+
+	public function tambah_ke_keranjang($id)
+    	{
+        $barang = $this->model_barang->find($id);
+        $data = array(
+            'id'      => $barang->id_brg,
+            'qty'     => 1,
+            'price'   => $barang->harga,
+            'name'    => $barang->nama_brg,
+        );
+
+        $this->cart->insert($data);
+        
+    	}
+
+5. lalu berikan redirect di paling bawah
+6. redirect('dashboard');
+7. tambahkan function tambah_ke_keranjang di models
+
+    public function find($id)
+    {
+        $result = $this->db->where('id_brg', $id)
+            ->limit(1)
+            ->get('tb_barang');
+        if ($result->num_rows() > 0) {
+            return $result->row();
+        } else {
+            return array();
+        }
+    }
+
+8. tambahkan cart pada sidebar dashboard
+
+			<div class="navbar">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li>
+                                    <?php $keranjang = 'Keranjang Belanja: ' . $this->cart->total_items() . 'items'
+                                    ?>
+
+                                    <?= $keranjang; ?>
+                                </li>
+                            </ul>
+                        </div>
+
+9. pada config/autoload di bagian libraries tambahkan 'cart'

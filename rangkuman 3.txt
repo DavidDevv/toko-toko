@@ -1,0 +1,31 @@
+1. buat folder admin di folder controllers
+2. buat file dashboard_admin.php di folder controllers/admin
+3. lalu isikan
+
+<?php
+
+class Dahsboard_admin extends CI_Controller{
+	public function index()
+	{
+	   $this->load->view('admin/dashboard');
+	}
+}
+
+4. buat folder admin di dalam /view
+5. buat file dashboard.php di /view/admin
+6. isikan div.container-fluid
+7. preview page source pada index.html
+8. copy content row
+9. paste ke dashboard.php pada /view/admin
+10 salin folder templates
+11. lalu ubah menjadi templates_admin
+12. pada sidebar ubah judul menjadi admin
+13. kategori ubah menjadi Data Barang, fa-database
+14. pakaian pria ubah menjadi Invoices, fa-file invoices
+15. lalu hapus pakaian wanita, anak anak, dan peralatan olahraga
+16. load footer, header, sidebar pada dashboard_admin di /controller/admin
+17. buka dokumentasi codeigniter dengan cara menambahkan user_guide pada url
+18. cari htaccess, klik codeigniter url
+19. copy pada removing the index.php file
+20. buat file baru di toko online dengan nama .htaccess
+21. lalu paste yg sudah di copy di dokumentasi codeigniter tadi

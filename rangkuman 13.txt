@@ -1,0 +1,22 @@
+*MEMBUAT TRIGGER UNTUK MENGELOLA STOK BARANG*
+
+1. Ke phpmyadmin buka database toko_online
+
+2. Buka table tb_barang yang ada di database toko_online
+
+3. Klik trigger lalu klik tambahkan trigger
+
+4. Nama trigger di isi dengan pesanan_penjualan
+
+5. Tabel di isi dengan tb_pesanan
+
+6. Waktu di isi dengan after
+
+7. Kejadian di isi dengan insert
+
+8. Di trigger makaakan jad seperti ini
+	
+	BEGIN
+	UPDATE tb_barang SET stok = stok-NEW.jumlah
+    	WHERE id_brg = NEW.id_brg;
+ 	END
